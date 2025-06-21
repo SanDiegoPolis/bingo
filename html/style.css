@@ -1,0 +1,279 @@
+html {
+  font: 14px sans-serif;
+  background: #EEE;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  margin: 0;
+}
+canvas {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #222;
+}
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+header {
+  padding: 20px;
+  text-align: center;
+}
+header h1 {
+  font-size: 38px;
+  line-height: 60px;
+}
+header p {
+  font-size: 14px;
+  line-height: 20px;
+  color: #999;
+}
+.config-box {
+  text-align: center;
+  padding: 20px 0;
+}
+input[type="file"] {
+  display: block;
+  width: 150px;
+}
+.app {
+  max-width: 800px;
+  margin: 40px auto;
+}
+input,
+button {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
+label {
+  cursor: pointer;
+}
+.input-label {
+  padding: 4px 0;
+}
+.input-label .label-name {
+  font-size: 12px;
+  line-height: 24px;
+  color: #666;
+}
+.ui-input {
+  border: 2px solid #222;
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 0;
+  font-size: 18px;
+  outline: none;
+  text-align: center;
+  width: 240px;
+  transition: box-shadow 1s ease, border-color 1s ease;
+}
+.ui-input.big {
+  padding: 10px 14px;
+}
+.ui-input.line {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ui-input:focus {
+  border-color: #000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+.ui-shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.current-config-box {
+  padding: 10px;
+  width: 224px;
+  background: #FFF;
+  margin: 10px;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.2);
+}
+.current-config-box .ui-input-box {
+  margin: 0 0 4px 0;
+  position: relative;
+}
+.current-config-box .ui-input {
+  text-align: center;
+}
+.current-config-box .ctrl-box {
+  padding: 4px 0 0;
+  display: flex;
+  justify-content: space-between;
+}
+.ui-btn {
+  background: #FFF;
+  box-shadow: 0 0 0 2px #222 inset;
+  color: #222;
+  border: 0;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 14px 18px;
+  margin: 0;
+  font-weight: bold;
+  vertical-align: top;
+}
+.ui-btn.current {
+  background: #222;
+  color: #FFF;
+}
+.ui-btn.red-wire {
+  box-shadow: 0 0 0 2px #c00 inset;
+  color: #c00;
+}
+.after-config-box {
+  text-align: center;
+}
+.after-config-box p {
+  padding: 14px 0;
+}
+[data-text]:before {
+  content: attr(data-text);
+}
+.ui-tabs-box {
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+}
+.ui-tabs-box a {
+  color: currentColor;
+  float: left;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 3px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+.ui-tabs-box a[data-checked="true"] {
+  background: currentColor;
+}
+.ui-tabs-box a[data-checked="true"]:before {
+  color: #FFF;
+}
+.ui-switch-box {
+  cursor: pointer;
+  margin: 0.2em;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  transition: opacity 0.3s ease;
+}
+.ui-switch-box .switch {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -0.3em;
+  width: 2.4em;
+  height: 1.4em;
+  border-radius: 9em;
+  background: rgba(0, 0, 0, 0.2);
+  background: #999;
+  transition: background-color 0.3s ease;
+}
+.ui-switch-box .switch .slider {
+  display: inline-block;
+  vertical-align: top;
+  width: 1em;
+  height: 1em;
+  border-radius: 9em;
+  background: #FFF;
+  margin: 0.2em;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+.ui-switch-box[data-checked] .switch {
+  background: #000;
+}
+.ui-switch-box[data-checked] .switch .slider {
+  transform: translateX(1em);
+}
+.ui-switch-box[data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.tip-box {
+  color: #999;
+}
+.output-box {
+  background: #FFF;
+  padding: 30px 10px;
+  text-align: center;
+}
+.output-box img {
+  width: 800px;
+  max-width: 100%;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.3);
+}
+.output-box p {
+  padding: 20px 0;
+}
+.output-box > .ctrl-box {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.output-box > .ctrl-box .ui-btn {
+  margin: 0 5px;
+}
+.main-after-box {
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+.main-after-box .tip-box {
+  animation: blink 3s infinite;
+}
+@keyframes blink {
+  40% {
+    opacity: 0;
+  }
+}
+@media (max-width: 600px) {
+  [data-device="pc"] {
+    display: none;
+  }
+}
+@media (min-width: 601px) {
+  [data-device="mobile"] {
+    display: none;
+  }
+}
+footer {
+  color: #999;
+  text-align: center;
+  font-size: 12px;
+  padding: 60px 0 100px;
+}
+footer a {
+  color: #333;
+  line-height: 20px;
+  margin: 0 5px;
+}

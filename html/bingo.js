@@ -5,8 +5,8 @@ const itemWidth = 200;
 const labelHeight = itemWidth * 0.2;
 
 const colsOptions = [];
-const defaultTitle = '宾果游戏';
-const defaultSub = '连成线你就是赢家';
+const defaultTitle = 'W∩∀宾果';
+const defaultSub = '连成线你就没救了';
 
 for(let i = 3; i <= 10; i++){
 	colsOptions.push({
@@ -20,10 +20,7 @@ const fitOptions = [
 	{ value: 'contain', text: '完整填充' },
 ];
 const copyRightText = [
-	'lab.magiconch.com/bingo',
-	'宾果游戏生成器',
-	'@卜卜口',
-	'神奇海螺试验场',
+	
 ].join(' · ');
 
 const lazy = (fn, delay = 100) => {
@@ -113,6 +110,7 @@ const v = new Vue({
 			title: '',
 			sub: '',
 		},
+		logoImage: null,
 	},
 	methods: {
 		async setImageFileById(file, id){
@@ -152,16 +150,18 @@ const v = new Vue({
 
 			if(cols > 3){
 				ctx.font = 'bold 60px sans-serif';
-
 				ctx.textBaseline = 'bottom';
 				// 绘制标题
-				ctx.fillText( title || defaultTitle, margin, headHeight + margin / 2 , maxWidth);
-
-
+				ctx.fillText(title || defaultTitle, margin, headHeight + margin / 2, maxWidth);
+			
 				// 绘制副标题
 				ctx.font = '30px sans-serif';
 				ctx.textAlign = 'right';
-				ctx.fillText( sub || defaultSub, width - margin, headHeight + margin / 2 , maxWidth);
+				const subText = sub || defaultSub;
+				const subTextWidth = ctx.measureText(subText).width;
+				
+				// 绘制副标题文本
+				ctx.fillText(subText, width - margin - 50, headHeight + margin / 2, maxWidth);
 			} else {
 				ctx.font = 'bold 50px sans-serif';
 
@@ -176,6 +176,22 @@ const v = new Vue({
 				ctx.fillText( sub || defaultSub, width / 2, margin * 2.3 , width);
 			}
 
+			// 如果有logo图片，绘制在副标题右侧
+			ctx.save();
+			if(this.logoImage && this.logoImage.complete) {
+				const logoSize = 40; // 方形logo的大小
+				const logoX = width - margin - 40; // 右侧边距40px
+				const logoY = headHeight + margin / 2 - logoSize;
+				
+				ctx.drawImage(
+				this.logoImage,
+				logoX, 
+				logoY,
+				logoSize, 
+				logoSize
+				);
+			}
+			ctx.restore();
 
 			// 绘制末尾
 			ctx.fillStyle = '#AAA';
@@ -259,17 +275,49 @@ const v = new Vue({
 					}
 
 					// 如果是文字
-					else if(text){
-						const calcFontSize = calcItemFontSize(text);
-						const fontSize = Math.min(Math.max(calcFontSize, 40), 80);
-						ctx.font = `bold ${fontSize}px sans-serif`;
-
-						ctx.fillText(
-							text, 
-							x * itemWidth + itemWidth / 2, 
-							y * itemWidth + itemWidth / 2, 
-							itemWidth - margin / 4
-						);
+					else if (text) {
+						const maxLines = 4; // 格子允许的最大行数
+						const minFontSize = 10; // 最小字体限制
+						let fontSize = Math.min(Math.max(calcItemFontSize(text), 40), 80); // 初始字号
+						
+						// 动态调整字体直至适配或达到最小字号
+						while (fontSize >= minFontSize) {
+							ctx.font = `bold ${fontSize}px sans-serif`;
+							const lineHeight = fontSize * 1.2;
+							const lines = splitTextToLines(text, ctx, itemWidth - margin / 4);
+							
+							// 检查是否超出格子高度（行数 * 行高 ≤ 格子高度）
+							if (lines.length * lineHeight <= itemWidth) break;
+							fontSize--; // 缩小字号
+						}
+					
+						// 最终换行绘制（垂直居中）
+						const lineHeight = fontSize * 1.2;
+						const lines = splitTextToLines(text, ctx, itemWidth - margin / 4);
+						const totalHeight = lines.length * lineHeight;
+						const startY = y * itemWidth + (itemWidth - totalHeight) / 2 + lineHeight / 2;
+						
+						ctx.textAlign = 'center';
+						for (let i = 0; i < lines.length; i++) {
+							ctx.fillText(lines[i], x * itemWidth + itemWidth / 2, startY + i * lineHeight);
+						}
+					}
+					
+					// 辅助函数：按最大宽度分割文本为多行
+					function splitTextToLines(text, ctx, maxWidth) {
+						const lines = [];
+						let currentLine = '';
+						for (const char of text) {
+							const testLine = currentLine + char;
+							if (ctx.measureText(testLine).width > maxWidth) {
+								lines.push(currentLine);
+								currentLine = char;
+							} else {
+								currentLine = testLine;
+							}
+						}
+						lines.push(currentLine);
+						return lines;
 					}
 
 					ctx.restore();
@@ -343,6 +391,15 @@ const v = new Vue({
 	},
 	mounted(){
 		this.$refs['canvas-box'].appendChild(canvas);
+		// 加载logo图片
+		const logoImg = new Image();
+		//logoImg.crossOrigin = "Anonymous"; // 处理跨域问题
+		logoImg.src = 'anti_muaball.png';
+		logoImg.onload = () => {
+		this.logoImage = logoImg;
+		this.isImageLoaded = true;
+		this.generator(); // 重新生成图片
+		};
 	}
 });
 
@@ -439,6 +496,7 @@ canvas.addEventListener('mousemove', e => {
 	// 在范围内
 	if(itemX >= 0 && itemX < rows && itemY >= 0 && itemY < rows){
 		// v.chooseItemImage(itemX, itemY);
+		//console.log('在范围内', itemX, itemY);
 		canvas.style.cursor = 'pointer';
 	}
 	else{
@@ -454,6 +512,8 @@ canvas.addEventListener('click', e => {
 	const { x, y } = getXY(e);
 
 	const { margin, rows, headHeight } = v.config;
+	console.log('margin rows headHeight', margin, rows, headHeight);
+	console.log('x y', x, y);
 	
 	// 点击标题
 	if(y < margin + headHeight){
@@ -473,7 +533,7 @@ canvas.addEventListener('click', e => {
 		// 在范围内
 		if(itemX >= 0 && itemX < rows && itemY >= 0 && itemY < rows){
 			// v.chooseItemImage(itemX, itemY);
-			// console.log('在范围内', itemX, itemY);
+			//console.log('在范围内', itemX, itemY);
 			v.currentId = `${itemX}-${itemY}`;
 
 			v.$nextTick(() => {
