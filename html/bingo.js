@@ -359,6 +359,8 @@ const v = new Vue({
 				return;
 			}
 
+			// 导出时使用当前配置，避免读取防抖期间的旧画布。
+			this.generator();
 			const url = canvas.toDataURL('image/jpeg', 0.9);
 			this.output = url;
 
