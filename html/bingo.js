@@ -45,16 +45,13 @@ const chooseImage = async () => {
 		});
 	});
 };
-const readImageToURL = async (file) => {
-	return URL.createObjectURL(file);
-};
-const getImageElFromURL = async (url) => {
-	return new Promise(resolve => {
+const pendingImageUrls = new Map();
+const getImageElFromURL = (url) => {
+	return new Promise((resolve, reject) => {
 		const img = new Image();
+		img.onload = () => resolve(img);
+		img.onerror = () => reject(new Error('无法读取图片'));
 		img.src = url;
-		img.onload = () => {
-			resolve(img);
-		};
 	});
 };
 const textSize = 80;
@@ -113,12 +110,24 @@ const v = new Vue({
 	},
 	methods: {
 		async setImageFileById(file, id){
-			const dataURL = await readImageToURL(file);
-			console.log(dataURL)
-			const img = await getImageElFromURL(dataURL);
-			console.log(img)
-			// this.config.Texts[id] = img;
-			this.$set(this.config.Images, id, img);
+			if(!file) return;
+			const url = URL.createObjectURL(file);
+			pendingImageUrls.set(id, url);
+			try {
+				const img = await getImageElFromURL(url);
+				if(pendingImageUrls.get(id) === url){
+					this.$set(this.config.Images, id, img);
+				}
+			} catch(error) {
+				if(pendingImageUrls.get(id) === url) console.warn(error.message);
+			} finally {
+				URL.revokeObjectURL(url);
+				if(pendingImageUrls.get(id) === url) pendingImageUrls.delete(id);
+			}
+		},
+		removeItemImage(id){
+			pendingImageUrls.delete(id);
+			this.config.Images[id] = '';
 		},
 		async chooseItemImage(id){
 			const file = await chooseImage();
