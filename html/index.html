@@ -87,7 +87,7 @@
 					</form>
 					<div class="ctrl-box">
 						<button class="ui-btn current" @click="closeCurrentPop()">确定并关闭</button>
-						<button class="ui-btn red-wire" @click="config.Images[currentId] = ''"  v-if="isImageEl(config.Images[currentId])">删除图片</button>
+						<button class="ui-btn red-wire" @click="removeItemImage(currentId)"  v-if="isImageEl(config.Images[currentId])">删除图片</button>
 						<button class="ui-btn" @click="chooseItemImage(currentId)" v-else>上传图片</button>
 					</div>
 				</div>
