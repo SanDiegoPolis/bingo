@@ -102,7 +102,6 @@ const v = new Vue({
 		config: {
 			margin: 40, // px
 			rows: 5,
-			cols: 5,
 			headHeight: 100,
 			fit: 'cover',
 			Texts: {},
@@ -458,13 +457,13 @@ canvas.addEventListener('drop',async e => {
 	const { files, texts } = getFilesOrTextsFromEvent(e);
 	const imageFiles = files.filter(file => file.type.startsWith('image/'));
 	const { x, y } = getXY(e);
-	const { margin, rows, cols, headHeight } = v.config;
+	const { margin, rows, headHeight } = v.config;
 
 	const itemX = Math.floor((x - margin) / itemWidth);
 	const itemY = Math.floor((y - margin - headHeight) / itemWidth);
 
 	// 在范围内
-	if(itemX >= 0 && itemX < cols && itemY >= 0 && itemY < rows){
+	if(itemX >= 0 && itemX < rows && itemY >= 0 && itemY < rows){
 		// v.chooseItemImage(itemX, itemY);
 		// console.log('在范围内', itemX, itemY);
 		const id = `${itemX}-${itemY}`;
